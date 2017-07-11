@@ -2,11 +2,11 @@ package com.iainrauch.apibenchmark.grpc;
 
 import com.google.protobuf.ByteString;
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -21,8 +21,9 @@ public class UserServer {
     private void start() throws IOException {
     /* The port on which the server should run */
         int port = 50051;
-        server = ServerBuilder.forPort(port)
+        server = NettyServerBuilder.forPort(port)
             .addService(new UserImpl())
+            .useTransportSecurity(new File("cert.pem"), new File("key.pem"))
             .build()
             .start();
         logger.info("Server started, listening on " + port);

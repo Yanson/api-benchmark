@@ -4,8 +4,12 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.internal.DnsNameResolverProvider;
+import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
+import io.netty.handler.ssl.SslContextBuilder;
 
+import javax.net.ssl.SSLException;
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -16,11 +20,12 @@ public class UserClient {
     private final ManagedChannel channel;
     private final UsersGrpc.UsersBlockingStub blockingStub;
 
-    public UserClient(String host, int port) {
+    public UserClient(String host, int port) throws SSLException {
         this(NettyChannelBuilder.forAddress(host, port)
             .nameResolverFactory(new DnsNameResolverProvider())
+            .sslContext(GrpcSslContexts.forClient().trustManager(new File("cert.pem")).build())
             // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid needing certificates.
-            .usePlaintext(true)
+//            .usePlaintext(true)
             .build());
     }
 
@@ -49,7 +54,7 @@ public class UserClient {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SSLException {
         UserClient client = new UserClient("localhost", 50051);
         UserReply reply = client.get("abc");
         System.out.println(reply.toString());

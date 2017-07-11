@@ -35,7 +35,8 @@ dependencies {
 }
 
 jmh {
-    include = ['.*Benchmark.*']
+//    include = ['.*Benchmark.*']
+    include = ['.*GRPCBenchmark.*']
 //    include = ['.*JettyBenchmark.*']
     iterations = 5
     timeOnIteration = '5s'
