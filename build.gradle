@@ -1,11 +1,47 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "me.champeau.gradle:jmh-gradle-plugin:0.4.3"
+    }
+}
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+plugins {
+    id "me.champeau.gradle.jmh" version "0.4.3"
+}
 
-repositories {
-    mavenCentral()
+allprojects{
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+dependencies {
+    compile project('grpc')
+}
+
+jmh {
+    include = ['.*Benchmark.*']
+    iterations = 10
+    benchmarkMode = ['thrpt', 'avgt']
+    batchSize = 1
+    fork = 1
+    failOnError = true
+    threads = 2
+    timeUnit = 'ms'
+    warmupBatchSize = 3
+    warmupIterations = 1
 }
 
 task wrapper(type: Wrapper) {
