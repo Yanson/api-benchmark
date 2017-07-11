@@ -6,10 +6,11 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
+
+import static com.iainrauch.apibenchmark.common.Utils.getBlob;
 
 public class UserServer {
 
@@ -73,12 +74,6 @@ public class UserServer {
                 .build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
-        }
-
-        private byte[] getBlob(int len) {
-            byte[] blob = new byte[len];
-            ThreadLocalRandom.current().nextBytes(blob);
-            return blob;
         }
 
     }

@@ -1,2 +1,2 @@
 rootProject.name = 'api-benchmark'
-include 'grpc'
+include 'common', 'grpc', 'jetty'
